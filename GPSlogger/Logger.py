@@ -19,7 +19,7 @@ def find_device():
     return None
 
 buffer = []
-flush_interval = 200
+flush_interval = 10
 
 with open('data.csv', 'a') as f:
 
