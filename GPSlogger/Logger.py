@@ -18,6 +18,9 @@ def find_device():
         return port.device
     return None
 
+buffer = []
+flush_interval = 200
+
 with open('data.csv', 'a') as f:
 
     while True:
@@ -44,8 +47,11 @@ with open('data.csv', 'a') as f:
                         timestamp = datetime.now().isoformat()
                         print(f"{timestamp}: {linecut}")
 
-                        f.write(f"{timestamp},{linecut}\n") #Writes line to file with timestamp
-                        f.flush()   #Sends data to the file immediately instead of waiting for the buffer to fill up 
+                        buffer.append(f"{timestamp},{linecut}") #Adds line to buffer with timestamp
+
+                        if len(buffer) >= flush_interval: #Checks if buffer has reached the flush interval
+                            f.writelines(buffer)
+                            buffer = []
 
 
         except serial.SerialException:
@@ -57,6 +63,9 @@ with open('data.csv', 'a') as f:
                 ser.close()
             except:
                 pass
+
+if buffer:
+    f.writelines(buffer)
 
 
 # In[ ]:
